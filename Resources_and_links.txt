@@ -1,0 +1,5 @@
+Resources and links used for this project:
+
+- Javascript Testing course by Udacity
+- http://jasmine.github.io/2.1/introduction.html
+- Udacity discussion forums
