@@ -27,48 +27,41 @@ $(function() {
         });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
+        /* This spec tests if each feed in the allFeeds object
+         * has a URL defined and that the URL is not empty.
          */
-         it('should have an URL for each feed', function() {
+        it('should have an URL for each feed', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.url).toBeDefined();
                 expect(feed.url).not.toBe('');
             });
-         });
+        });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
+        /* This spec tests if each feed in the allFeeds object
+         * has a name defined and that the name is not empty.
          */
-         it('should have a name for each feed', function() {
+        it('should have a name for each feed', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.name).toBeDefined();
                 expect(feed.name).not.toBe('');
             });
-         });
+        });
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* New test suite called 'The Menu'. This suite tests the visibility of the menu
+     * element on different situations.
+     */
     describe('The Menu', function() {
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
-         it('is hidden by default', function() {
+        /* This spec tests if the menu element is hidden by default. */
+        it('is hidden by default', function() {
             expect($('body').attr('class')).toBe('menu-hidden');
-         });
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
-          it('changes visibility on click', function() {
+        });
+
+        /* This spec tests if the menu changes visibility when the menu icon is clicked. */
+        it('changes visibility on click', function() {
             var $menu_icon = $('.menu-icon-link');
 
             $menu_icon.trigger('click');    // first click on the menu icon button
@@ -76,57 +69,61 @@ $(function() {
 
             $menu_icon.trigger('click');    // second click on the menu icon button
             expect($('body').attr('class')).toBe('menu-hidden'); // the menu should not be visible
-          });
+        });
     });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
+    /* New test suite called 'Initial Entries'. It tests the asynchronous method loadFeed()*/
     describe('Initial Entries', function() {
 
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test wil require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
+        /* This spec tests if there is at least a single .entry element within the
+         * .feed container when the loadFeed() completes its work.
          */
 
-        /* Before the execution of the spec, we execute the async method to load the first feed.
+        /* Before the execution of the spec, we execute the async method loadFeed() to load the first feed.
          * The spec will not start until the done function is called.
          */
-         beforeEach(function(done) {
+        beforeEach(function(done) {
             loadFeed(0, done);
-         });
+        });
 
-         it('should have at least a single .entry element within the .feed container', function(done) {
+        it('should have at least a single .entry element within the .feed container', function(done) {
             expect($('.feed .entry').length).toBeGreaterThan(0);
             done();     // the spec will complete when done is called
-         });
+        });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+    /* New test suite called 'New Feed Selection'. It tests if there are actual changes in the content
+     * of the feed when the loadFeed() function is called again.
+     */
     describe('New Feed Selection', function() {
-
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
-         var feedTitle = $('.header-title').html();     // variable that stores the first title that loads in the header
 
         /* Before the execution of the spec, we execute the async method to load the first feed.
          * The spec will not start until the done function is called.
          */
-         beforeEach(function(done) {
-            loadFeed(1, done);  // we load a new feed
-         });
+
+        var feedTitle;      // variable that stores the first title that loads in the header
+        var newFeedTitle;   // variable that stores the new title that is loaded after beforeEach function is executed
+
+        beforeEach(function(done) {
+            // we make sure the first feed is loaded and store the header
+            loadFeed(0, function() {
+                feedTitle = $('.header-title').html();
+                done();
+            });
+        });
 
          /* After the execution of the spec, we load the initial feed again */
-         afterEach(function(done) {
+        afterEach(function(done) {
             loadFeed(0, done);
-         });
+        });
 
-         it('should change content when a new feed is loaded', function(done) {
-            var newFeedTitle = $('.header-title').html();   // variable that stores the new title that is loaded after beforeEach function is executed
-            expect(newFeedTitle).not.toBe(feedTitle);
-            done();
-         });
+        it('should change content when a new feed is loaded', function(done) {
+            // we load a new feed and store the new header to test it against the previous one
+            loadFeed(1, function() {
+                newFeedTitle = $('.header-title').html();
+                expect(newFeedTitle).not.toBe(feedTitle);
+                done();
+            });
+        });
     });
 }());
